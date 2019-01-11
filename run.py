@@ -14,7 +14,6 @@ from plotly import figure_factory as FF
 import urllib.parse
 
 sys.path.append("lib")
-import dl
 import utils
 import strategy
 from loader import Loader
