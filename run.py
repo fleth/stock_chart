@@ -133,11 +133,11 @@ def simulate(args, simulator_data, start, end):
     print(start_tick, end_tick)
 
     simulator = Simulator(setting)
-    simulator_data = simulator_data.split(start_tick, end_tick)
     dates = simulator_data.dates(start_tick, end_tick)
     print(dates)
     stats = simulator.simulate(dates, simulator_data, index)
 
+    simulator_data = simulator_data.split(start_tick, end_tick)
     return stats, simulator_data
 
 @app.callback(Output("code", "options"), [Input("strategy", "value"), Input("target", "value")])
