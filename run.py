@@ -36,24 +36,26 @@ app.layout = html.Div([
                 {"label": "combination", "value": "combination"},
                 {"label": "daytrade", "value": "daytrade"},
                 {"label": "falling", "value": "falling"},
-            ], value="combination"),
+                {"label": "rising", "value": "rising"},
+                {"label": "nikkei", "value": "nikkei"},
+            ], value="rising"),
             dcc.Dropdown(id="env", options=[
                 {"label": "PRODUCTION", "value": "PRODUCTION"},
                 {"label": "DEVELOP", "value": "DEVELOP"}
             ], value="PRODUCTION"),
             dcc.Dropdown(id="target", options=[
-                {"label": "DEFAULT", "value": "DEFAULT"},
+                {"label": "DAILY", "value": "DAILY"},
                 {"label": "TICK", "value": "TICK"},
                 {"label": "REALTIME", "value": "REALTIME"}
-            ], value="DEFAULT"),
+            ], value="DAILY"),
             dcc.Dropdown(id="method", options=[
                 {"label": "SHORT", "value": "SHORT"},
                 {"label": "LONG", "value": "LONG"},
             ], value="LONG"),
             dcc.Dropdown(id="code", options=options, value=""),
-            dcc.Input(id="input_code", type="text", value=""),
-            dcc.Input(id="before", type="text", value=before),
-            dcc.Input(id="date", type="text", value=date),
+            dcc.Input(id="input_code", type="text", value="", placeholder="code"),
+            dcc.Input(id="before", type="text", value=before, placeholder="term"),
+            dcc.Input(id="date", type="text", value=date, placeholder="date"),
         ]),
     ]),
     dcc.Graph(id='stockchart', style={"height":1200}),
