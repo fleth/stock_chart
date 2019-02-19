@@ -96,6 +96,8 @@ def set_strategy(args, strategy_name):
         args.daytrade = True
     elif strategy_name == "falling":
         args.falling = True
+    elif strategy_name == "rising":
+        args.rising = True
 
     return args
 
