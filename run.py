@@ -38,6 +38,7 @@ app.layout = html.Div([
                 {"label": "falling", "value": "falling"},
                 {"label": "rising", "value": "rising"},
                 {"label": "nikkei", "value": "nikkei"},
+                {"label": "new_high", "value": "new_high"},
             ], value="rising"),
             dcc.Dropdown(id="env", options=[
                 {"label": "PRODUCTION", "value": "PRODUCTION"},
@@ -98,6 +99,8 @@ def set_strategy(args, strategy_name):
         args.falling = True
     elif strategy_name == "rising":
         args.rising = True
+    elif strategy_name == "new_high":
+        args.new_high = True
 
     return args
 
