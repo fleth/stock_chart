@@ -169,9 +169,8 @@ def update_stock_graph(code, before, date, url, input_code, env, target, method,
 
     end = date
     start = utils.to_format(utils.to_datetime(end) - utils.relativeterm(int(before), args.tick))
-    before_date = utils.to_format(utils.to_datetime(start) - utils.relativeterm(3, args.tick))
 
-    simulator_data = strategy.load_simulator_data(args.code, before_date, end, args)
+    simulator_data = strategy.load_simulator_data(args.code, start, end, args)
     stats, simulator_data = simulate(args, simulator_data, start, end)
 
     print(stats["trade_history"])
