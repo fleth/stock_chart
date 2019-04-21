@@ -1,3 +1,6 @@
 [submodule "lib"]
 	path = lib
 	url = https://github.com/fleth/stock_lib.git
+[submodule "setup"]
+	path = setup
+	url = https://github.com/fleth/stock_setup.git
