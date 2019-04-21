@@ -4,3 +4,6 @@
 [submodule "setup"]
 	path = setup
 	url = https://github.com/fleth/stock_setup.git
+[submodule "data"]
+	path = data
+	url = https://github.com/fleth/stock_data_sample.git
