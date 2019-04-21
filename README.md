@@ -4,7 +4,7 @@
 
 # Install
 ```
-sh setup.sh
+sh setup_samples.sh
 ```
 
 # Usage
