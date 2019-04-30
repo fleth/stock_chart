@@ -130,7 +130,7 @@ def simulate(args, simulator_data, start, end):
             index[k] = utils.add_index_stats(data)
 
     setting = SimulatorSetting()
-    setting.strategy["daily"] = strategy.load_strategy(args)
+    setting.strategy = strategy.load_strategy(args)
     setting.assets = assets["assets"] if assets is not None else 1
     setting.short_trade = args.short
     setting.debug = True
