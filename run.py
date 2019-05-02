@@ -127,7 +127,9 @@ def simulate(args, simulator_data, start, end):
     if not args.tick:
         for k in ["nikkei"]:
             data = Loader.load_index(k, start, end, with_filter=True, strict=False)
-            index[k] = utils.add_index_stats(data)
+            data = utils.add_stats(data)
+            data = utils.add_cs_stats(data)
+            index[k] = data
 
     setting = SimulatorSetting()
     setting.strategy = strategy.load_strategy(args)
