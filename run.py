@@ -35,10 +35,6 @@ app.layout = html.Div([
             dcc.Dropdown(id="strategy", options=[
                 {"label": "combination", "value": "combination"},
                 {"label": "daytrade", "value": "daytrade"},
-                {"label": "falling", "value": "falling"},
-                {"label": "rising", "value": "rising"},
-                {"label": "nikkei", "value": "nikkei"},
-                {"label": "new_high", "value": "new_high"},
             ], value="rising"),
             dcc.Dropdown(id="env", options=[
                 {"label": "PRODUCTION", "value": "PRODUCTION"},
@@ -95,12 +91,6 @@ def set_method(args, method):
 def set_strategy(args, strategy_name):
     if strategy_name == "daytrade":
         args.daytrade = True
-    elif strategy_name == "falling":
-        args.falling = True
-    elif strategy_name == "rising":
-        args.rising = True
-    elif strategy_name == "new_high":
-        args.new_high = True
 
     return args
 
@@ -132,7 +122,8 @@ def simulate(args, simulator_data, start, end):
             index[k] = data
 
     setting = SimulatorSetting()
-    setting.strategy = strategy.load_strategy(args)
+    combination_setting = strategy.create_combination_setting(args)
+    setting.strategy = strategy.load_strategy(args, combination_setting)
     setting.assets = assets["assets"] if assets is not None else 1
     setting.short_trade = args.short
     setting.debug = True
@@ -159,7 +150,8 @@ def update_codes(strategy_name, target):
 
     date = dt.now().strftime("%Y-%m-%d")
 
-    strategy_creator = strategy.load_strategy_creator(args)
+    combination_setting = strategy.create_combination_setting(args)
+    strategy_creator = strategy.load_strategy_creator(args, combination_setting)
     codes = strategy_creator.subject(date)
     options = list(map(lambda x: {'label':x, 'value':x}, codes))
     return options
