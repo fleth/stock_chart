@@ -35,7 +35,7 @@ app.layout = html.Div([
             dcc.Dropdown(id="strategy", options=[
                 {"label": "combination", "value": "combination"},
                 {"label": "daytrade", "value": "daytrade"},
-            ], value="rising"),
+            ], value="combination"),
             dcc.Dropdown(id="env", options=[
                 {"label": "PRODUCTION", "value": "PRODUCTION"},
                 {"label": "DEVELOP", "value": "DEVELOP"}
@@ -196,7 +196,7 @@ def update_stock_graph(code, before, date, url, input_code, env, target, method,
         "env12_cross", "env11_cross", "env09_cross", "env08_cross",
     ], bar=True)
     fig = add_stats(fig, 3, 1, [], df, ["stages", "stages_average"])
-    fig = add_stats(fig, 4, 1, [], df, ["macd_trend", "macdhist_trend", "macdhist_convert", "rci_trend", "rci_long_trend"], bar=True)
+    fig = add_stats(fig, 4, 1, [], df, ["macd_trend", "macdhist_trend", "macdhist_convert", "rci_trend", "rci_long_trend", "rising_safety_trend", "fall_safety_trend"], bar=True)
     fig = add_stats(fig, 5, 1, [], df, ["daily_average_trend", "weekly_average_trend", "stages_trend", "stages_average_trend", "volume_average_trend"], bar=True)
     fig = add_stats(fig, 9, 1, [], df, ["env12", "env11", "env09", "env08"], alpha=0.3)
     fig = add_stats(fig, 9, 1, stocks, df, ["daily_average", "weekly_average"], alpha=0.9, size=3)
