@@ -135,6 +135,7 @@ def simulate(args, simulator_data, start, end):
     simulator = Simulator(setting)
     dates = simulator_data.dates(start_tick, end_tick)
     print(dates)
+    print(simulator_data.daily[["date", "stages_average", "fall_safety_trend", "env08_cross"]])
     stats = simulator.simulate(dates, simulator_data, index)
 
     simulator_data = simulator_data.split(start_tick, end_tick)
