@@ -121,7 +121,7 @@ def simulate(args, simulator_data, start, end):
             data = utils.add_cs_stats(data)
             index[k] = data
 
-    setting = SimulatorSetting()
+    setting = strategy.create_simulator_setting(args)
     combination_setting = strategy.create_combination_setting(args)
     setting.strategy = strategy.load_strategy(args, combination_setting)
     setting.assets = assets["assets"] if assets is not None else 1
@@ -134,8 +134,6 @@ def simulate(args, simulator_data, start, end):
 
     simulator = Simulator(setting)
     dates = simulator_data.dates(start_tick, end_tick)
-    print(dates)
-    print(simulator_data.daily[["date", "stages_average", "fall_safety_trend", "env08_cross"]])
     stats = simulator.simulate(dates, simulator_data, index)
 
     simulator_data = simulator_data.split(start_tick, end_tick)
