@@ -172,8 +172,8 @@ def update_stock_graph(code, before, date, url, input_code, env, target, method,
     df = simulator_data.daily
     df = df[df["date"] >= start]
     df = df.reset_index()
-    df["new"] = list(map(lambda x: x["new"], stats["trade_history"]))
-    df["repay"] = list(map(lambda x: x["repay"], stats["trade_history"]))
+    df["new"] = list(map(lambda x: x["new"], stats["trade_history"][:-1]))
+    df["repay"] = list(map(lambda x: x["repay"], stats["trade_history"][:-1]))
 
     # 陽線-> candle.data[1], 陰線 -> candle.data[0]
     candle = FF.create_candlestick(df["open"], df["high"], df["low"], df["close"], dates=df["date"])
