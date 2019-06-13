@@ -16,7 +16,7 @@ import urllib.parse
 sys.path.append("lib")
 import utils
 import strategy
-from loader import Loader
+from loader import Loader, Bitcoin
 from simulator import Simulator, SimulatorSetting, SimulatorData
 
 app = dash.Dash()
@@ -130,6 +130,11 @@ def simulate(args, simulator_data, start, end):
 
     start_tick = "%s 15:00:00" % start
     end_tick = "%s 15:00:00" % end
+
+    if args.code in Bitcoin().exchange:
+        start_tick = "%s 23:59:59" % start
+        end_tick = "%s 23:59:59" % end
+
     print(start_tick, end_tick)
 
     simulator = Simulator(setting)
