@@ -78,9 +78,9 @@ def set_env(args, env):
 
 def set_target(args, target):
     args.realtime = target == "REALTIME"
-    args.tick = target == "TICK" or args.realtime
+    args.daytrade = target == "TICK" or args.realtime
 
-    if args.tick:
+    if args.daytrade:
         args.before_ranking = True
     return args
 
@@ -114,7 +114,7 @@ def create_args(url, env, target, code, input_code, method, strategy_name):
 def simulate(args, simulator_data, start, end):
     assets = Loader.assets()
     index = {}
-    if not args.tick:
+    if not args.daytrade:
         for k in ["nikkei"]:
             data = Loader.load_index(k, start, end, with_filter=True, strict=False)
             data = utils.add_stats(data)
@@ -128,20 +128,20 @@ def simulate(args, simulator_data, start, end):
     setting.short_trade = args.short
     setting.debug = True
 
-    start_tick = "%s 15:00:00" % start
-    end_tick = "%s 15:00:00" % end
+    start_time = "%s 15:00:00" % start
+    end_time = "%s 15:00:00" % end
 
     if args.code in Bitcoin().exchange:
-        start_tick = "%s 23:59:59" % start
-        end_tick = "%s 23:59:59" % end
+        start_time = "%s 23:59:59" % start
+        end_time = "%s 23:59:59" % end
 
-    print(start_tick, end_tick)
+    print(start_time, end_time)
 
     simulator = Simulator(setting)
-    dates = simulator_data.dates(start_tick, end_tick)
+    dates = simulator_data.dates(start_time, end_time)
     stats = simulator.simulate(dates, simulator_data, index)
 
-    simulator_data = simulator_data.split(start_tick, end_tick)
+    simulator_data = simulator_data.split(start_time, end_time)
     return stats, simulator_data
 
 @app.callback(Output("code", "options"), [Input("strategy", "value"), Input("target", "value")])
@@ -166,7 +166,7 @@ def update_stock_graph(code, before, date, url, input_code, env, target, method,
     args = create_args(url, env, target, code, input_code, method, strategy_name)
 
     end = date
-    start = utils.to_format(utils.to_datetime(end) - utils.relativeterm(int(before), args.tick))
+    start = utils.to_format(utils.to_datetime(end) - utils.relativeterm(int(before), args.daytrade))
 
     simulator_data = strategy.load_simulator_data(args.code, start, end, args)
     stats, simulator_data = simulate(args, simulator_data, start, end)
