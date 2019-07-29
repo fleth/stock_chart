@@ -99,6 +99,9 @@ def create_args(url, env, target, code, input_code, method, strategy_name):
     parser = strategy.create_parser()
     args = parser.parse_args()
 
+    args.rule = "1T"
+    args.trade_step = 5
+
     args = set_env(args, env)
     args = set_target(args, target)
     args = set_method(args, method)
@@ -131,7 +134,7 @@ def simulate(args, simulator_data, start, end):
     start_time = "%s 15:00:00" % start
     end_time = "%s 15:00:00" % end
 
-    if args.code in Bitcoin().exchange:
+    if args.code in Bitcoin().exchanges:
         start_time = "%s 23:59:59" % start
         end_time = "%s 23:59:59" % end
 
