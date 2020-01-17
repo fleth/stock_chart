@@ -34,7 +34,6 @@ app.layout = html.Div([
         html.Div([
             dcc.Dropdown(id="strategy", options=[
                 {"label": "combination", "value": "combination"},
-                {"label": "before_ranking", "value": "before_ranking"},
             ], value="combination"),
             dcc.Dropdown(id="env", options=[
                 {"label": "PRODUCTION", "value": "PRODUCTION"},
@@ -80,18 +79,10 @@ def set_target(args, target):
     args.realtime = target == "REALTIME"
     args.daytrade = target == "TICK" or args.realtime
 
-    if args.daytrade:
-        args.before_ranking = True
     return args
 
 def set_method(args, method):
     args.short = method == "SHORT"
-    return args
-
-def set_strategy(args, strategy_name):
-    if strategy_name == "before_ranking":
-        args.before_ranking = True
-
     return args
 
 def create_args(url, env, target, code, input_code, method, strategy_name):
@@ -105,7 +96,6 @@ def create_args(url, env, target, code, input_code, method, strategy_name):
     args = set_env(args, env)
     args = set_target(args, target)
     args = set_method(args, method)
-    args = set_strategy(args, strategy_name)
 
     args.code = code
 
