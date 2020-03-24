@@ -22,7 +22,7 @@ from simulator import Simulator, SimulatorSetting, SimulatorData
 app = dash.Dash()
 
 today = dt.now().strftime("%Y-%m-%d")
-codes = Loader.realtime_sheet_stocks(today)
+codes = []
 
 before = 3
 date = utils.to_format(dt.now())
@@ -39,11 +39,6 @@ app.layout = html.Div([
                 {"label": "PRODUCTION", "value": "PRODUCTION"},
                 {"label": "DEVELOP", "value": "DEVELOP"}
             ], value="PRODUCTION"),
-            dcc.Dropdown(id="target", options=[
-                {"label": "DAILY", "value": "DAILY"},
-                {"label": "TICK", "value": "TICK"},
-                {"label": "REALTIME", "value": "REALTIME"}
-            ], value="DAILY"),
             dcc.Dropdown(id="method", options=[
                 {"label": "SHORT", "value": "SHORT"},
                 {"label": "LONG", "value": "LONG"},
@@ -75,26 +70,16 @@ def set_env(args, env):
     args.production = env == "PRODUCTION"
     return args
 
-def set_target(args, target):
-    args.realtime = target == "REALTIME"
-    args.daytrade = target == "TICK" or args.realtime
-
-    return args
-
 def set_method(args, method):
     args.short = method == "SHORT"
     return args
 
-def create_args(url, env, target, code, input_code, method, strategy_name):
+def create_args(url, env, code, input_code, method, strategy_name):
 
     parser = strategy.create_parser()
     args = parser.parse_args()
 
-    args.rule = "1T"
-    args.trade_step = 5
-
     args = set_env(args, env)
-    args = set_target(args, target)
     args = set_method(args, method)
 
     args.code = code
@@ -106,14 +91,7 @@ def create_args(url, env, target, code, input_code, method, strategy_name):
 
 def simulate(args, simulator_data, start, end):
     assets = Loader.assets()
-    index = {}
-    if not args.daytrade:
-        for k in ["nikkei"]:
-            data = Loader.load_index(k, start, end, with_filter=True, strict=False)
-            data = utils.add_stats(data)
-            data = utils.add_cs_stats(data)
-            index[k] = data
-
+    index = strategy.load_index(args, start, end)
     setting = strategy.create_simulator_setting(args)
     combination_setting = strategy.create_combination_setting(args)
     setting.strategy = strategy.load_strategy(args, combination_setting)
@@ -137,12 +115,11 @@ def simulate(args, simulator_data, start, end):
     simulator_data = simulator_data.split(start_time, end_time)
     return stats, simulator_data
 
-@app.callback(Output("code", "options"), [Input("strategy", "value"), Input("target", "value")])
-def update_codes(strategy_name, target):
+@app.callback(Output("code", "options"), [Input("strategy", "value")])
+def update_codes(strategy_name):
     parser = strategy.create_parser()
     args = parser.parse_args()
 
-    args = set_target(args, target)
     args = set_strategy(args, strategy_name)
 
     date = dt.now().strftime("%Y-%m-%d")
@@ -153,13 +130,13 @@ def update_codes(strategy_name, target):
     options = list(map(lambda x: {'label':x, 'value':x}, codes))
     return options
 
-@app.callback(Output('stockchart', 'figure'), [Input('code', 'value'), Input("before", "value"), Input("date", "value"), Input("url", "href"), Input("input_code", "value"), Input("env", "value"), Input("target", "value"), Input("method", "value"), Input("strategy", "value")])
-def update_stock_graph(code, before, date, url, input_code, env, target, method, strategy_name):
+@app.callback(Output('stockchart', 'figure'), [Input('code', 'value'), Input("before", "value"), Input("date", "value"), Input("url", "href"), Input("input_code", "value"), Input("env", "value"), Input("method", "value"), Input("strategy", "value")])
+def update_stock_graph(code, before, date, url, input_code, env, method, strategy_name):
 
-    args = create_args(url, env, target, code, input_code, method, strategy_name)
+    args = create_args(url, env, code, input_code, method, strategy_name)
 
     end = date
-    start = utils.to_format(utils.to_datetime(end) - utils.relativeterm(int(before), args.daytrade))
+    start = utils.to_format(utils.to_datetime(end) - utils.relativeterm(int(before)))
 
     simulator_data = strategy.load_simulator_data(args.code, start, end, args)
     stats, simulator_data = simulate(args, simulator_data, start, end)
