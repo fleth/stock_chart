@@ -52,6 +52,7 @@ app.layout = html.Div([
     dcc.Graph(id='stockchart', style={"height":1200}),
 ])
 
+
 def add_stats(fig, row, col, data, df, keys, alpha=1.0, bar=False, mode="lines", size=1):
     for key in keys:
         if bar:
@@ -115,18 +116,19 @@ def simulate(args, simulator_data, start, end):
     simulator_data = simulator_data.split(start_time, end_time)
     return stats, simulator_data
 
-@app.callback(Output("code", "options"), [Input("strategy", "value")])
-def update_codes(strategy_name):
+def set_strategy(args, strategy_name):
+    return args
+
+@app.callback(Output("code", "options"), [Input("strategy", "value"), Input("date", "value")])
+def update_codes(strategy_name, date):
     parser = strategy.create_parser()
     args = parser.parse_args()
 
     args = set_strategy(args, strategy_name)
 
-    date = dt.now().strftime("%Y-%m-%d")
-
     combination_setting = strategy.create_combination_setting(args)
     strategy_creator = strategy.load_strategy_creator(args, combination_setting)
-    codes = strategy_creator.subject(date)
+    codes = strategy_creator.subject(utils.to_format(utils.to_datetime(date) - utils.relativeterm(1)))
     options = list(map(lambda x: {'label':x, 'value':x}, codes))
     return options
 
@@ -214,4 +216,6 @@ def update_stock_graph(code, before, date, url, input_code, env, method, strateg
     return fig
 
 if __name__ == '__main__':
+    date = dt.now().strftime("%Y-%m-%d")
+    update_codes("combination", date)
     app.run_server(host='0.0.0.0')
