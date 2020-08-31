@@ -41,8 +41,8 @@ def load_performance(filename, path="simulate_settings/performances/"):
 @app.callback(Output('chart', 'figure'), [Input('target', 'value'), Input('env', 'value')])
 def update_graph(target, env):
 
-    setting = Loader.simulate_setting("%s%ssimulate_setting.json" % (target, env))
-    performance = sorted(load_performance("%s%sperformance.json" % (target, env)).items(), key=lambda x: utils.to_datetime(x[0]))
+    setting = Loader.simulate_setting("%s%ssimulate_setting.json" % (env, target))
+    performance = sorted(load_performance("%s%sperformance.json" % (env, target)).items(), key=lambda x: utils.to_datetime(x[0]))
 
     optimize_end_date = setting["date"]
     filterd_performance = list(filter(lambda x: utils.to_datetime(x[0]) < utils.to_datetime(optimize_end_date), performance))
