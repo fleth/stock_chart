@@ -9,7 +9,8 @@ from pandas_datareader import data as web
 from datetime import datetime as dt
 from dateutil.relativedelta import relativedelta
 import plotly
-from plotly import tools
+import plotly.graph_objects as go
+from plotly import subplots
 from plotly import figure_factory as FF
 import urllib.parse
 
@@ -156,7 +157,7 @@ def update_stock_graph(code, before, date, url, input_code, env, method, strateg
     candle = FF.create_candlestick(df["open"], df["high"], df["low"], df["close"], dates=df["date"])
     stocks = list(candle.data)
 
-    fig = tools.make_subplots(rows=9, cols=1, shared_xaxes=True, shared_yaxes=True)
+    fig = subplots.make_subplots(rows=9, cols=1, shared_xaxes=True, shared_yaxes=True)
 
     fig = add_stats(fig, 9, 1, [], df, ["new", "repay"], mode="markers", size=10)
     fig = add_stats(fig, 8, 1, [], df, ["volume"], bar=True)
@@ -179,10 +180,20 @@ def update_stock_graph(code, before, date, url, input_code, env, method, strateg
     fig = add_stats(fig, 9, 1, [], df, ["rising_safety", "fall_safety"], alpha=0.9, size=2)
     fig = add_stats(fig, 9, 1, [], df, ["resistance", "support"], alpha=0.6, size=2)
 
+
+    rangebreaks = [dict(bounds=["sat", "mon"])]
+    daterange = [df["date"].iloc[0], df["date"].iloc[-1]]
+
     fig.layout = plotly.graph_objs.Layout(
-        xaxis=dict(
-            type="category"
-        ),
+        xaxis=dict(range=daterange, rangebreaks=rangebreaks),
+        xaxis2=dict(range=daterange, rangebreaks=rangebreaks),
+        xaxis3=dict(range=daterange, rangebreaks=rangebreaks),
+        xaxis4=dict(range=daterange, rangebreaks=rangebreaks),
+        xaxis5=dict(range=daterange, rangebreaks=rangebreaks),
+        xaxis6=dict(range=daterange, rangebreaks=rangebreaks),
+        xaxis7=dict(range=daterange, rangebreaks=rangebreaks),
+        xaxis8=dict(range=daterange, rangebreaks=rangebreaks),
+        xaxis9=dict(range=daterange, rangebreaks=rangebreaks),
         yaxis=dict(
             domain=[0, 0.15],
         ),
@@ -210,12 +221,11 @@ def update_stock_graph(code, before, date, url, input_code, env, method, strateg
         yaxis9=dict(
             domain=[0.6, 1.0]
         )
-
     )
 
     return fig
 
 if __name__ == '__main__':
     date = dt.now().strftime("%Y-%m-%d")
-    update_codes("combination", date)
+    #update_codes("combination", date)
     app.run_server(host='0.0.0.0')
