@@ -23,12 +23,17 @@ options = [
 app.layout = html.Div([
     dcc.Dropdown(id="target", options=[
         {"label": "futures", "value": "futures_"},
+        {"label": "new_high_", "value": "new_high_"},
         {"label": "default", "value": ""}
     ], value=""),
     dcc.Dropdown(id="env", options=[
         {"label": "PRODUCTION", "value": "production_"},
         {"label": "DEVELOP", "value": ""}
     ], value="production_"),
+    dcc.Dropdown(id="method", options=[
+        {"label": "long", "value": ""},
+        {"label": "short", "value": "short_"}
+    ], value=""),
     dcc.Graph(id='chart', style={"height":480}),
 ])
 
@@ -38,11 +43,11 @@ def load_performance(filename, path="simulate_settings/performances/"):
     data = json.load(f)
     return data
 
-@app.callback(Output('chart', 'figure'), [Input('target', 'value'), Input('env', 'value')])
-def update_graph(target, env):
+@app.callback(Output('chart', 'figure'), [Input('target', 'value'), Input('env', 'value'), Input('method', 'value')])
+def update_graph(target, env, method):
 
-    setting = Loader.simulate_setting("%s%ssimulate_setting.json" % (env, target))
-    performance = sorted(load_performance("%s%sperformance.json" % (env, target)).items(), key=lambda x: utils.to_datetime(x[0]))
+    setting = Loader.simulate_setting("%s%s%ssimulate_setting.json" % (env, target, method))
+    performance = sorted(load_performance("%s%s%sperformance.json" % (env, target, method)).items(), key=lambda x: utils.to_datetime(x[0]))
 
     optimize_end_date = setting["date"]
     filterd_performance = list(filter(lambda x: utils.to_datetime(x[0]) < utils.to_datetime(optimize_end_date), performance))
