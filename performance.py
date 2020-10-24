@@ -24,6 +24,9 @@ app.layout = html.Div([
     dcc.Dropdown(id="target", options=[
         {"label": "futures", "value": "futures_"},
         {"label": "new_high_", "value": "new_high_"},
+        {"label": "open_close_", "value": "open_close_"},
+        {"label": "open_close_instant_", "value": "open_close_instant_"},
+        {"label": "default_instant", "value": "instant_"},
         {"label": "default", "value": ""}
     ], value=""),
     dcc.Dropdown(id="env", options=[
