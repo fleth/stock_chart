@@ -26,6 +26,7 @@ options = [
     {"label": "新高値新安値スコア", "value": "settings/new_score"},
     {"label": "新高値スコア", "value": "settings/new_high"},
     {"label": "新安値スコア", "value": "settings/new_low"},
+    {"label": "業種スコア", "value": "settings/industry_trend"},
 ]
 
 for i, row in industry_code.iterrows():
